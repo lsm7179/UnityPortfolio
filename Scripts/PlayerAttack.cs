@@ -6,28 +6,32 @@ public class PlayerAttack : MonoBehaviour {
 
     private Animator ani;
     //플레이어가 공격하는 모션 제어
-    float timer;
-    float waitingTime;
+    private GameObject bladeEffactPrefab;
+    public Transform EffectPosTr;
+
     void Start () {
         ani = GetComponent<Animator>();
-        timer = 0.0f;
-        waitingTime = 0.3f;
+        bladeEffactPrefab = Resources.Load<GameObject>("Effect/BladeStorm");
     }
 	
-	void Update () {
+	void FixedUpdate () {
+        Attack();
 
-		if(Input.GetMouseButtonDown(0))
+    }
+
+    void Attack()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
         {
 
-            ani.SetBool("IsAttack",true);
-
+            PlayerAniCtrl.IsWalk = false;
+            ani.SetTrigger("IsAttack");
+            AttackEffect();
 
         }
-        timer += Time.deltaTime;
-        if (timer > waitingTime)
-        {
-            timer = 0.0f;
-            ani.SetBool("IsAttack", false);
-        }
+    }
+    void AttackEffect()
+    {
+        //Instantiate(bladeEffactPrefab, EffectPosTr.position, EffectPosTr.rotation);
     }
 }
