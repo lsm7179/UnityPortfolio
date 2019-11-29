@@ -235,7 +235,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.85
+  m_Radius: 1.1
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 1.7, z: 0}
@@ -277,6 +277,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Navi: {fileID: 383434847}
   TraceDist: 30
+  hpBar: {fileID: 468456648}
+  thisCanvas: {fileID: 0}
 --- !u!1 &391071957
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,7 +505,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1905093644}
+  m_Father: {fileID: 1337122358}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -691,6 +693,7 @@ GameObject:
   - component: {fileID: 1337122361}
   - component: {fileID: 1337122360}
   - component: {fileID: 1337122359}
+  - component: {fileID: 1337122362}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -708,13 +711,14 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.18211609, y: 0.050432004, z: 1.0000002}
   m_Children:
+  - {fileID: 468456647}
   - {fileID: 1905093644}
   m_Father: {fileID: 383434846}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 3.37}
+  m_AnchoredPosition: {x: 0, y: 3.15}
   m_SizeDelta: {x: 10, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1337122359
@@ -774,6 +778,17 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1337122362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1337122357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff80844e891d7264fb36ecbba1e87ca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1340321114
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,6 +1085,10 @@ Prefab:
       propertyPath: m_LocalPosition.x
       value: -0.675
       objectReference: {fileID: 0}
+    - target: {fileID: 100122, guid: 69e6a6ea8e179f445bd248ba46f2a2e9, type: 3}
+      propertyPath: m_TagString
+      value: Sword
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 69e6a6ea8e179f445bd248ba46f2a2e9, type: 3}
   m_IsPrefabParent: 0
@@ -1133,7 +1152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c86f52f224195a4ab5d020bf325a1a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EffectPosTr: {fileID: 0}
+  effectPosTr: {fileID: 0}
+  swordCollider: {fileID: 1946456736}
+  check: 1
 --- !u!114 &1532702431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1311,10 +1332,9 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 468456647}
+  m_Children: []
   m_Father: {fileID: 1337122358}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1406,3 +1426,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.23450054, y: 0.052861825, z: 1}
   m_Center: {x: 0, y: -0.000000014550986, z: 0.48}
+--- !u!54 &1946456737
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1946456732}
+  serializedVersion: 2
+  m_Mass: 0.5
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

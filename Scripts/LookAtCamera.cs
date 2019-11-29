@@ -13,6 +13,8 @@ public class LookAtCamera : MonoBehaviour {
 	}
 	
 	void Update () {
-        thisCanvasTr.LookAt(mainCamTr);
+        //y축으로만 바라보게 만들기.
+        thisCanvasTr.rotation = Quaternion.Euler(mainCamTr.rotation.x, mainCamTr.rotation.y, mainCamTr.rotation.z);
+        //thisCanvasTr.LookAt(mainCamTr);
 	}
 }

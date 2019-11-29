@@ -13,16 +13,23 @@ public class SkeleteonCtrl : MonoBehaviour {
     private Transform PlayerTr;
     public float TraceDist = 30f;
     private Animator Ani;
+    [SerializeField]
     private Image hpBar;
+    [SerializeField]
+    private Canvas thisCanvas;
+    private int HpInit = 100;
+    private int Hp = 100;
+    private GameObject hitEffect;
 	void Start () {
         Navi = GetComponent<NavMeshAgent>();
         SkeletonTr = GetComponent<Transform>();
         PlayerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
         Ani = GetComponent<Animator>();
-
+        //hpBar = GetComponentInChildren<Image>();
+        thisCanvas = GetComponentInChildren<Canvas>();
+        hitEffect = Resources.Load<GameObject>("Effect/HitParticle");
     }
 	
-	// Update is called once per frame
 	void Update () {
         float dist = Vector3.Distance(PlayerTr.position, SkeletonTr.position);
         if(dist <= TraceDist&& dist > 2.0f)
@@ -39,4 +46,32 @@ public class SkeleteonCtrl : MonoBehaviour {
             Ani.SetBool("IsAttack", false);
         }
 	}
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("좀비가 맞는 로직");
+        if (other.gameObject.CompareTag("Sword"))
+        {
+            Ani.SetTrigger("IsHit");
+            hit(other.transform.position);
+            MinusHp();
+        }
+    }
+
+    void MinusHp()
+    {
+        Hp -= 35;
+        hpBar.fillAmount = (float)Hp / (float)HpInit;
+        Debug.Log(Hp);
+        if(Hp <= 0)
+        {
+            thisCanvas.enabled = false;
+        }
+    }
+
+    void hit(Vector3 hitPos)
+    {
+        GameObject hitEff = Instantiate(hitEffect, hitPos, Quaternion.identity);
+        Destroy(hitEff, 0.5f);
+    }
 }
