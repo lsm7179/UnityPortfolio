@@ -10,7 +10,9 @@ public class SkeleteonCtrl : MonoBehaviour {
       자신과 플레이어의 거리를 재서 추적과 공격을 한다.*/
     [SerializeField]
     private NavMeshAgent Navi;
+    [SerializeField]
     private Transform SkeletonTr;
+    [SerializeField]
     private Transform PlayerTr;
     public float TraceDist = 30f;
     private Animator Ani;
@@ -22,52 +24,51 @@ public class SkeleteonCtrl : MonoBehaviour {
     private int Hp = 100;
     private GameObject hitEffect;
     private bool isDie =false;
-	void Awake () {
+	void Start () {
         Navi = GetComponent<NavMeshAgent>();
         SkeletonTr = GetComponent<Transform>();
         PlayerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
         Ani = GetComponent<Animator>();
-        //hpBar = GetComponentInChildren<Image>();
+        hpBar = GetComponentInChildren<Image>();
         thisCanvas = GetComponentInChildren<Canvas>();
         hitEffect = Resources.Load<GameObject>("Effect/HitParticle");
+        StartCoroutine(Action());
     }
-	
-	void Update () {
-        Behavior();
 
+    //몬스터 액션 확인
+    IEnumerator Action()
+    {
+        while (!isDie)
+        {
+            yield return new WaitForSeconds(0.2f);
+
+            float dist = Vector3.Distance(PlayerTr.position, SkeletonTr.position);
+            if (dist <= TraceDist && dist > 4.0f)
+            {
+
+                Navi.isStopped = false;
+                Navi.destination = PlayerTr.position;
+                Ani.SetBool("IsAttack", false);
+                Ani.SetBool("IsTrace", true);
+
+            }
+            else if (dist <= 4.0f)
+            {
+                Navi.isStopped = true;
+                Ani.SetBool("IsTrace", false);
+                Ani.SetBool("IsAttack", true);
+            }
+        }
     }
+
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("좀비가 맞는 로직");
         if (other.gameObject.CompareTag("Sword"))
         {
             Ani.SetTrigger("IsHit");
             Hit(other.transform.position);
             MinusHp();
-        }
-    }
-
-    void Behavior()
-    {
-        if (!isDie)
-        {
-            float dist = Vector3.Distance(PlayerTr.position, SkeletonTr.position);
-            if (dist <= TraceDist && dist > 2.0f)
-            {
-            
-                    Navi.isStopped = false;
-                    Navi.destination = PlayerTr.position;
-                    Ani.SetBool("IsAttack", false);
-                    Ani.SetBool("IsTrace", true);
-         
-            }
-            else if (dist <= 2.0f)
-            {
-                Navi.isStopped = true;
-                Ani.SetBool("IsTrace", false);
-                Ani.SetBool("IsAttack", false);
-            }
         }
     }
 
@@ -90,13 +91,25 @@ public class SkeleteonCtrl : MonoBehaviour {
     }
     void Die()//캔버스 , hp 초기화, 내비게이션 초기화
     {
-        isDie=true;
+        isDie = true;
         Ani.SetTrigger("IsDie");
         Navi.isStopped = true;
         thisCanvas.enabled = false;
-        Hp = 100;
         GetComponent<CapsuleCollider>().enabled = false;
-        
+        StopAllCoroutines();
+        StartCoroutine(PushPool());
+    }
+
+    IEnumerator PushPool()
+    {
+        yield return new WaitForSeconds(0.2f);
+        isDie = false;
+        thisCanvas.enabled = true;
+        hpBar.fillAmount = 1.0f;
+        Hp = 100;
+        GetComponent<CapsuleCollider>().enabled = true;
+        gameObject.SetActive(false);
+
 
     }
 }
