@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerAniCtrl : MonoBehaviour {
 
     public static bool IsWalk = false;
+    public static bool IsAttack = false;
     [SerializeField]
     private Animator Ani;
 
@@ -14,5 +15,6 @@ public class PlayerAniCtrl : MonoBehaviour {
 	
 	void FixedUpdate () {
         Ani.SetBool("IsWalk", IsWalk);
+        Ani.SetBool("IsAttack", IsAttack);
     }
 }

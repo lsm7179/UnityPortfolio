@@ -29,25 +29,26 @@ public class PlayerAttack : MonoBehaviour {
         {
 
             Debug.Log("공격");
-            check = false;
+            StartCoroutine(WaitForAttack(0.16f));
             swordCollider.enabled = true;
             timer += Time.time;
             PlayerAniCtrl.IsWalk = false;
-            ani.SetTrigger("IsAttack");
-            AttackEffect();
-            StartCoroutine(WaitForIt());
+            PlayerAniCtrl.IsAttack = true;
+            StartCoroutine(WaitForIt(0.4f));
 
         }
-        if(Time.time >= timer + 1.5f) {
-            
-        }
     }
-    IEnumerator WaitForIt()
+    IEnumerator WaitForAttack(float time)
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(time);
+        check = false;
+    }
+        IEnumerator WaitForIt(float time)
+    {
+        yield return new WaitForSeconds(time);
         swordCollider.enabled = false;
         check = true;
-        Debug.Log("시간지연");
+        PlayerAniCtrl.IsAttack = false;
     }
     void AttackEffect()
     {
