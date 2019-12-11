@@ -24,7 +24,7 @@ public class SkeleteonCtrl : MonoBehaviour {
     private int Hp = 100;
     private GameObject hitEffect;
     private bool isDie =false;
-	void Start () {
+	void Awake () {
         Navi = GetComponent<NavMeshAgent>();
         SkeletonTr = GetComponent<Transform>();
         PlayerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
@@ -32,6 +32,12 @@ public class SkeleteonCtrl : MonoBehaviour {
         hpBar = GetComponentInChildren<Image>();
         thisCanvas = GetComponentInChildren<Canvas>();
         hitEffect = Resources.Load<GameObject>("Effect/HitParticle");
+       
+    }
+
+    //해당 오브젝트가 active 상태일때 메소드가 실행 된다.***
+    void OnEnable()
+    {
         StartCoroutine(Action());
     }
 
@@ -109,7 +115,5 @@ public class SkeleteonCtrl : MonoBehaviour {
         Hp = 100;
         GetComponent<CapsuleCollider>().enabled = true;
         gameObject.SetActive(false);
-
-
     }
 }

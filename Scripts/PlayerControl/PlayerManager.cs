@@ -10,11 +10,15 @@ public class PlayerManager : MonoBehaviour {
     private int hpInit = 300;
     private int hp = 300;
     private Text hpText = null;
+    [SerializeField]
+    private GameObject inventory = null;
+    private bool InvenOnOff = false;
     void Awake()
     {
         hpBar= GameObject.Find("HpBar").GetComponent<Image>();
         hpText = hpBar.GetComponentInChildren<Text>();
-
+        inventory = GameObject.Find("Inventory");
+        inventory.SetActive(InvenOnOff);
     }
 
     
@@ -26,6 +30,15 @@ public class PlayerManager : MonoBehaviour {
             hp -= 15;
             hpBar.fillAmount= (float)hp / (float)hpInit;
             hpText.text= hp+" / "+ hpInit;
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            InvenOnOff = !InvenOnOff;
+            inventory.SetActive(InvenOnOff);
         }
     }
 }

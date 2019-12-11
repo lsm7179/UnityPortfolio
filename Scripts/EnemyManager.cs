@@ -62,7 +62,6 @@ public class EnemyManager : MonoBehaviour {
                     int idx = Random.Range(1, points.Length);
                     _skel.transform.position = points[idx].position;
                     _skel.SetActive(true);
-                    //Debug.Log(_skel.name.ToString() + " " + _skel.active.ToString());
                     break;
                 }
             }
