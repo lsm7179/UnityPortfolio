@@ -17,7 +17,6 @@ public class CamerMoveCtrl : MonoBehaviour {
         transform.position = player.transform.position + offset;
         //cameraRotate();
 
-        
 	}
 
 
