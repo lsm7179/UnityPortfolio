@@ -28,7 +28,6 @@ public class PlayerAttack : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.A)&& check)
         {
 
-            Debug.Log("공격");
             StartCoroutine(WaitForAttack(0.16f));
             swordCollider.enabled = true;
             timer += Time.time;

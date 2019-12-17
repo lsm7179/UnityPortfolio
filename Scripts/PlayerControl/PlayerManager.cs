@@ -21,17 +21,29 @@ public class PlayerManager : MonoBehaviour {
         inventory.SetActive(InvenOnOff);
     }
 
-    
-	void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
-        //if(MonsterSword)
         if (other.gameObject.name.Equals("MonsterSword"))
         {
             hp -= 15;
-            hpBar.fillAmount= (float)hp / (float)hpInit;
-            hpText.text= hp+" / "+ hpInit;
+            hpBar.fillAmount = (float)hp / (float)hpInit;
+            hpText.text = hp + " / " + hpInit;
         }
+        Debug.Log(other.gameObject.name);
     }
+
+    //void OnTriggerEnter(Collider other)
+    //{
+    //    //if(MonsterSword)
+        
+
+    //    if (other.gameObject.name.Equals("MonsterSword"))
+    //    {
+    //        hp -= 15;
+    //        hpBar.fillAmount= (float)hp / (float)hpInit;
+    //        hpText.text= hp+" / "+ hpInit;
+    //    }
+    //}
 
     void Update()
     {

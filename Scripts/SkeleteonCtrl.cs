@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UI;
 
 //모바일에 최적화 된 스크립트 소스 작성
@@ -9,12 +8,11 @@ public class SkeleteonCtrl : MonoBehaviour {
     /*스켈레톤 컨트롤
       자신과 플레이어의 거리를 재서 추적과 공격을 한다.*/
     [SerializeField]
-    private NavMeshAgent Navi;
-    [SerializeField]
     private Transform SkeletonTr;
     [SerializeField]
     private Transform PlayerTr;
-    public float TraceDist = 30f;
+    public float MoveSpeed = 3.0f;
+    public float TraceDist = 7f;
     private Animator Ani;
     [SerializeField]
     private Image hpBar;
@@ -24,15 +22,24 @@ public class SkeleteonCtrl : MonoBehaviour {
     private int Hp = 100;
     private GameObject hitEffect;
     private bool isDie =false;
+    public enum SkelState {idle=0,trace,attack,die};
+    public static SkelState thisState = SkelState.idle;
+    private Animator ani;
 	void Awake () {
-        Navi = GetComponent<NavMeshAgent>();
         SkeletonTr = GetComponent<Transform>();
         PlayerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
         Ani = GetComponent<Animator>();
         hpBar = GetComponentInChildren<Image>();
         thisCanvas = GetComponentInChildren<Canvas>();
         hitEffect = Resources.Load<GameObject>("Effect/HitParticle");
-       
+        ani = GetComponent<Animator>();
+
+
+    }
+
+    void FixedUpdate()
+    {
+        Trace();//추적은 내비게이션 보다 fixedupdate를 사용하여 구현 했다.
     }
 
     //해당 오브젝트가 active 상태일때 메소드가 실행 된다.***
@@ -51,18 +58,23 @@ public class SkeleteonCtrl : MonoBehaviour {
             float dist = Vector3.Distance(PlayerTr.position, SkeletonTr.position);
             if (dist <= TraceDist && dist > 4.0f)
             {
-
-                Navi.isStopped = false;
-                Navi.destination = PlayerTr.position;
+                thisState = SkelState.trace;
                 Ani.SetBool("IsAttack", false);
                 Ani.SetBool("IsTrace", true);
 
             }
             else if (dist <= 4.0f)
             {
-                Navi.isStopped = true;
+                thisState = SkelState.attack;
+                SkeletonTr.rotation = Quaternion.Slerp(SkeletonTr.rotation, Quaternion.LookRotation(PlayerTr.position-SkeletonTr.position),Time.deltaTime*3);
                 Ani.SetBool("IsTrace", false);
                 Ani.SetBool("IsAttack", true);
+            }
+            else
+            {
+                thisState = SkelState.idle;
+                Ani.SetBool("IsTrace", false);
+                Ani.SetBool("IsAttack", false);
             }
         }
     }
@@ -82,7 +94,6 @@ public class SkeleteonCtrl : MonoBehaviour {
     {
         Hp -= 35;
         hpBar.fillAmount = (float)Hp / (float)HpInit;
-        Debug.Log(Hp);
         
         if(Hp <= 0)//죽었을때
         {
@@ -97,9 +108,10 @@ public class SkeleteonCtrl : MonoBehaviour {
     }
     void Die()//캔버스 , hp 초기화, 내비게이션 초기화
     {
+        thisState = SkelState.die;
         isDie = true;
+        Ani.SetBool("IsTrace", false);
         Ani.SetTrigger("IsDie");
-        Navi.isStopped = true;
         thisCanvas.enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
         StopAllCoroutines();
@@ -115,5 +127,19 @@ public class SkeleteonCtrl : MonoBehaviour {
         Hp = 100;
         GetComponent<CapsuleCollider>().enabled = true;
         gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 추적하는 함수
+    /// </summary>
+    void Trace()
+    {
+        if (thisState != SkelState.trace|| ani.GetCurrentAnimatorStateInfo(0).IsName("Attack")) 
+        {
+            //Ani.SetBool("IsTrace", false); 
+            return; 
+        }
+        SkeletonTr.rotation = Quaternion.Slerp(SkeletonTr.rotation, Quaternion.LookRotation(PlayerTr.position - SkeletonTr.position), Time.deltaTime * 3);
+        SkeletonTr.Translate(Vector3.forward * MoveSpeed * Time.deltaTime);
     }
 }

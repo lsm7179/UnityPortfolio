@@ -22,12 +22,20 @@ public class PlayerMove : MonoBehaviour {
     }
 		
 	void FixedUpdate () {
-        move();
+        Move();
+        //MoveKey();
+    }
 
+    void MoveKey()
+    {
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        playTr.Translate(Vector3.right * h * moveSpeed * Time.deltaTime);
+        playTr.Translate(Vector3.forward * v * moveSpeed * Time.deltaTime);
     }
 
     //플레이어 이동 및 이동 애니메이션 제어
-    void move()
+    void Move()
     {
         // 마우스 입력을 받았 을 때
         if (Input.GetMouseButtonUp(0))
@@ -38,6 +46,7 @@ public class PlayerMove : MonoBehaviour {
             if (Physics.Raycast(ray, out hit, 10000f))
             {
                 targetPos = hit.point;
+                targetPos.y = 0;
             }
             PlayerAniCtrl.IsWalk = true;
         }
