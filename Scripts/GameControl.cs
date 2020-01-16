@@ -13,11 +13,15 @@ public class GameControl : MonoBehaviour {
 	public RectTransform SoundMenu;
 
 	private GameObject _player;
+	public static bool isSaveing= false;
 
 	void Awake () {
 		_player = GameObject.FindWithTag("Player").gameObject;
-		//_player.transform.position = new Vector3(PlayerPrefs.GetFloat("x"), PlayerPrefs.GetFloat("y"), PlayerPrefs.GetFloat("z"));
-		//_player.transform.eulerAngles = new Vector3(0, PlayerPrefs.GetFloat("Cam_y"), 0);
+		if (isSaveing)
+		{
+		_player.transform.position = new Vector3(PlayerPrefs.GetFloat("x"), PlayerPrefs.GetFloat("y"), PlayerPrefs.GetFloat("z"));
+		_player.transform.eulerAngles = new Vector3(0, PlayerPrefs.GetFloat("Cam_y"), 0);
+		}
 	}
 	
 	void Update () {
@@ -69,6 +73,7 @@ public class GameControl : MonoBehaviour {
 
 		if (isQuit)
 		{
+			isSaveing = true;
 			Time.timeScale = 1;
 			SceneManager.LoadScene("GameStart");
 		}

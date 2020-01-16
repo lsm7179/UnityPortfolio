@@ -6,11 +6,15 @@ public class CamerMoveCtrl : MonoBehaviour {
 
 
     public GameObject player;
-    private Vector3 offset;
+    private static Vector3 offset;
     private Transform camTr;
 	void Start () {
         offset = transform.position - player.transform.position;
         camTr = GetComponent<Transform>();
+        PlayerPrefs.SetFloat("c_x", offset.x);
+        PlayerPrefs.SetFloat("c_y", offset.y);
+        PlayerPrefs.SetFloat("c_z", offset.z);
+       offset = new Vector3(PlayerPrefs.GetFloat("c_x"), PlayerPrefs.GetFloat("c_y"), PlayerPrefs.GetFloat("c_z"));
     }
 	
 	void LateUpdate () {
