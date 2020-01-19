@@ -11,10 +11,16 @@ public class CamerMoveCtrl : MonoBehaviour {
 	void Start () {
         offset = transform.position - player.transform.position;
         camTr = GetComponent<Transform>();
-        PlayerPrefs.SetFloat("c_x", offset.x);
-        PlayerPrefs.SetFloat("c_y", offset.y);
-        PlayerPrefs.SetFloat("c_z", offset.z);
-       offset = new Vector3(PlayerPrefs.GetFloat("c_x"), PlayerPrefs.GetFloat("c_y"), PlayerPrefs.GetFloat("c_z"));
+        if (GameControl.isSaveing)
+        {
+               offset = new Vector3(PlayerPrefs.GetFloat("c_x"), PlayerPrefs.GetFloat("c_y"), PlayerPrefs.GetFloat("c_z"));
+        }
+        else
+        {
+            PlayerPrefs.SetFloat("c_x", offset.x);
+            PlayerPrefs.SetFloat("c_y", offset.y);
+            PlayerPrefs.SetFloat("c_z", offset.z);
+        }
     }
 	
 	void LateUpdate () {

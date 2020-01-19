@@ -20,17 +20,22 @@ public class SkeleteonCtrl : MonoBehaviour {
     private Canvas thisCanvas;
     private int HpInit = 100;
     private int Hp = 100;
-    private GameObject hitEffect;
+    
     private bool isDie =false;
     public enum SkelState {idle=0,trace,attack,die};
     public static SkelState thisState = SkelState.idle;
-	void Awake () {
+    private GameObject hitEffect;
+    public GameObject MpSphere = null;
+    private GameObject DestroyEffect;
+    void Awake () {
         SkeletonTr = GetComponent<Transform>();
         PlayerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
         Ani = GetComponent<Animator>();
         hpBar = GetComponentInChildren<Image>();
         thisCanvas = GetComponentInChildren<Canvas>();
         hitEffect = Resources.Load<GameObject>("Effect/HitParticle");
+        DestroyEffect = Resources.Load<GameObject>("Effect/DestoryParticle");
+        MpSphere = Resources.Load<GameObject>("Effect/MpSphere");
 
     }
 
@@ -119,12 +124,24 @@ public class SkeleteonCtrl : MonoBehaviour {
         thisCanvas.enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
         StopAllCoroutines();
+
         StartCoroutine(PushPool());
+
+        
     }
+
+
 
     IEnumerator PushPool()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(2.0f);
+        DestoryEffect();
+        //mp, hp 회복구
+        //MpSphere.SetActive(true);
+        float mpx = transform.position.x + Random.Range(-2, 2);
+        float mpz = transform.position.z + Random.Range(-2, 2);
+        GameObject MpSphere_ = (GameObject)Instantiate(MpSphere, new Vector3(mpx, MpSphere.transform.position.y, mpz), Quaternion.identity);
+        yield return new WaitForSeconds(1.0f);
         isDie = false;
         thisState = SkelState.idle;
         thisCanvas.enabled = true;
@@ -132,6 +149,12 @@ public class SkeleteonCtrl : MonoBehaviour {
         Hp = 100;
         GetComponent<CapsuleCollider>().enabled = true;
         gameObject.SetActive(false);
+    }
+
+    void DestoryEffect()
+    {
+        GameObject DestoryEffect_ = Instantiate(DestroyEffect, this.transform.position, Quaternion.identity);
+        Destroy(DestoryEffect_, 0.8f);
     }
 
     /// <summary>

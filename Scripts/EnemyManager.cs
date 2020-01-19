@@ -35,10 +35,6 @@ public class EnemyManager : MonoBehaviour {
         //하이라키 상에 SpawnPoint 오브젝트 명을 찾은 다음 하위 오브젝트의 트랜스폼 컴퍼넌트를 배열에 대입
         points = GameObject.Find("SpawnGroup").GetComponentsInChildren<Transform>();
         skeleton = Resources.Load<GameObject>("Prefabs/Skeleton");
-        if (points.Length > 0)
-        {
-            StartCoroutine(CreateSkelOnce());
-        }
         for(int i = 0; i < MaxCount; i++)
         {
             GameObject skeleton_ = (GameObject)Instantiate(skeleton);
@@ -48,7 +44,7 @@ public class EnemyManager : MonoBehaviour {
         }
 	}
 	
-    IEnumerator CreateSkelOnce()
+    public IEnumerator CreateSkelOnce()
     {
         yield return new WaitForSeconds(0.5f);
         int idx = 1;

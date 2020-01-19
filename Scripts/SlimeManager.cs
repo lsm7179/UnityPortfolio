@@ -11,7 +11,7 @@ public class SlimeManager : MonoBehaviour {
 
     public float createTime = 3.0f;
     public bool isGameOver = false;
-    public int MaxCount = 4;
+    public int MaxCount = 5;
     public List<GameObject> slimePool = new List<GameObject>();
 
     //싱글톤 구현
@@ -36,10 +36,6 @@ public class SlimeManager : MonoBehaviour {
         //하이라키 상에 SpawnPoint 오브젝트 명을 찾은 다음 하위 오브젝트의 트랜스폼 컴퍼넌트를 배열에 대입
         points = GameObject.Find("SlimSpawn").GetComponentsInChildren<Transform>();
         slime = Resources.Load<GameObject>("Prefabs/slime");
-        if (points.Length > 0)
-        {
-            StartCoroutine(CreateSlimeOnce());
-        }
         for(int i = 0; i < MaxCount; i++)
         {
             GameObject slime_ = (GameObject)Instantiate(slime);
@@ -48,16 +44,17 @@ public class SlimeManager : MonoBehaviour {
             slimePool.Add(slime_);
         }
 	}
-    IEnumerator CreateSlimeOnce()
+
+    public IEnumerator CreateSlimeOnce()
     {
         yield return new WaitForSeconds(0.5f);
         int idx = 1;
-        foreach (GameObject _skel in slimePool)
+        foreach (GameObject _slime in slimePool)
         {
-            if (!_skel.activeSelf)
+            if (!_slime.activeSelf)
             {
-                _skel.transform.position = points[idx].position;
-                _skel.SetActive(true);
+                _slime.transform.position = points[idx].position;
+                _slime.SetActive(true);
                 idx++;
             }
         }
