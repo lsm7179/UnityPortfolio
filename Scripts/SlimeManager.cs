@@ -14,7 +14,7 @@ public class SlimeManager : MonoBehaviour {
     public int MaxCount = 5;
     public List<GameObject> slimePool = new List<GameObject>();
 
-    //싱글톤 구현
+    //싱글톤
     public static SlimeManager _instance = null;
     public static SlimeManager Instance
     {
@@ -25,7 +25,7 @@ public class SlimeManager : MonoBehaviour {
                 _instance = FindObjectOfType(typeof(SlimeManager)) as SlimeManager;
                 if(_instance == null)
                 {
-                    Debug.LogError("There's no active EnemyManager object");
+                    Debug.LogError("There's no active SlimeManager object");
                 }
             }
             return _instance;

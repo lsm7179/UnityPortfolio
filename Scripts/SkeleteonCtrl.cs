@@ -26,7 +26,8 @@ public class SkeleteonCtrl : MonoBehaviour {
     public static SkelState thisState = SkelState.idle;
     private GameObject hitEffect;
     public GameObject MpSphere = null;
-    private GameObject DestroyEffect;
+    public GameObject HpSphere = null;
+    private GameObject DestroyEffect = null;
     void Awake () {
         SkeletonTr = GetComponent<Transform>();
         PlayerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
@@ -36,7 +37,7 @@ public class SkeleteonCtrl : MonoBehaviour {
         hitEffect = Resources.Load<GameObject>("Effect/HitParticle");
         DestroyEffect = Resources.Load<GameObject>("Effect/DestoryParticle");
         MpSphere = Resources.Load<GameObject>("Effect/MpSphere");
-
+        HpSphere = Resources.Load<GameObject>("Effect/HpSphere");
     }
 
     void FixedUpdate()
@@ -140,7 +141,12 @@ public class SkeleteonCtrl : MonoBehaviour {
         //MpSphere.SetActive(true);
         float mpx = transform.position.x + Random.Range(-2, 2);
         float mpz = transform.position.z + Random.Range(-2, 2);
+        float hpx = transform.position.x + Random.Range(-2, 2);
+        float hpz = transform.position.z + Random.Range(-2, 2);
         GameObject MpSphere_ = (GameObject)Instantiate(MpSphere, new Vector3(mpx, MpSphere.transform.position.y, mpz), Quaternion.identity);
+        MpSphere_.name = "MpSphere";
+        GameObject HpSphere_ = (GameObject)Instantiate(HpSphere, new Vector3(hpx, HpSphere.transform.position.y, hpz), Quaternion.identity);
+        HpSphere_.name = "HpSphere";
         yield return new WaitForSeconds(1.0f);
         isDie = false;
         thisState = SkelState.idle;

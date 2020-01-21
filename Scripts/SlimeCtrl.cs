@@ -27,7 +27,9 @@ public class SlimeCtrl : MonoBehaviour {
 
 	public enum SlimeState { idle = 0, trace, attack, die };
 	public SlimeState thisState = SlimeState.idle;
-
+	public GameObject MpSphere = null;
+	public GameObject HpSphere = null;
+	private GameObject DestroyEffect = null;
 	void Awake () {
 		slimeTr=GetComponent<Transform>();
 		playerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
@@ -36,8 +38,16 @@ public class SlimeCtrl : MonoBehaviour {
 		thisCanvas = GetComponentInChildren<Canvas>();
 		hitEffect = Resources.Load<GameObject>("Effect/HitParticle");
 		this.enabled = true;
+		DestroyEffect = Resources.Load<GameObject>("Effect/DestoryParticle");
+		MpSphere = Resources.Load<GameObject>("Effect/MpSphere");
+		HpSphere = Resources.Load<GameObject>("Effect/HpSphere");
 	}
-	
+
+	void FixedUpdate()
+	{
+		Trace();
+	}
+
 	//슬라임이 active 상태일때 메소드가 실행된다.
 	void OnEnable()
 	{
@@ -116,7 +126,19 @@ public class SlimeCtrl : MonoBehaviour {
 	IEnumerator PushPool()
 	{
 		GetComponentInChildren<CapsuleCollider>().enabled = false;
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1.5f);
+		DestoryEffect();
+		//mp, hp 회복구
+		//MpSphere.SetActive(true);
+		float mpx = transform.position.x + Random.Range(-2, 2);
+		float mpz = transform.position.z + Random.Range(-2, 2);
+		float hpx = transform.position.x + Random.Range(-2, 2);
+		float hpz = transform.position.z + Random.Range(-2, 2);
+		GameObject MpSphere_ = (GameObject)Instantiate(MpSphere, new Vector3(mpx, MpSphere.transform.position.y, mpz), Quaternion.identity);
+		MpSphere_.name = "MpSphere";
+		GameObject HpSphere_ = (GameObject)Instantiate(HpSphere, new Vector3(hpx, HpSphere.transform.position.y, hpz), Quaternion.identity);
+		HpSphere_.name = "HpSphere";
+		yield return new WaitForSeconds(1.0f);
 		thisState = SlimeState.idle;
 		thisCanvas.enabled = true;
 		hpBar.fillAmount = 1.0f;
@@ -124,8 +146,11 @@ public class SlimeCtrl : MonoBehaviour {
 		GetComponentInChildren<CapsuleCollider>().enabled = true;
 		gameObject.SetActive(false);
 	}
-	void FixedUpdate () {
-		Trace();
+
+	void DestoryEffect()
+	{
+		GameObject DestoryEffect_ = Instantiate(DestroyEffect, this.transform.position, Quaternion.identity);
+		Destroy(DestoryEffect_, 0.8f);
 	}
 
 	/// <summary>
@@ -141,4 +166,6 @@ public class SlimeCtrl : MonoBehaviour {
 		slimeTr.rotation = Quaternion.Slerp(slimeTr.rotation, Quaternion.LookRotation(playerTr.position - slimeTr.position), Time.deltaTime * 3);
 		slimeTr.Translate(Vector3.forward * speed * Time.deltaTime);
 	}
+
+
 }
