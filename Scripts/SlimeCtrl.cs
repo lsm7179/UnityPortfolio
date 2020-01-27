@@ -119,7 +119,7 @@ public class SlimeCtrl : MonoBehaviour {
 		Ani.SetBool("IsTrace", false);
 		Ani.SetTrigger("IsDie");
 		thisCanvas.enabled = false;
-		
+		GameControl.gameControl.KillChk();//킬 체크
 		StopAllCoroutines();
 		StartCoroutine(PushPool());
 	}

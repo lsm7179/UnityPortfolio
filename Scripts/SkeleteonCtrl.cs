@@ -28,6 +28,7 @@ public class SkeleteonCtrl : MonoBehaviour {
     public GameObject MpSphere = null;
     public GameObject HpSphere = null;
     private GameObject DestroyEffect = null;
+    public Collider monsterSword = null;
     void Awake () {
         SkeletonTr = GetComponent<Transform>();
         PlayerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
@@ -38,6 +39,7 @@ public class SkeleteonCtrl : MonoBehaviour {
         DestroyEffect = Resources.Load<GameObject>("Effect/DestoryParticle");
         MpSphere = Resources.Load<GameObject>("Effect/MpSphere");
         HpSphere = Resources.Load<GameObject>("Effect/HpSphere");
+        monsterSword.enabled = false;
     }
 
     void FixedUpdate()
@@ -65,9 +67,11 @@ public class SkeleteonCtrl : MonoBehaviour {
                     break;
                 case SkelState.attack:
                     SkeletonTr.rotation = Quaternion.Slerp(SkeletonTr.rotation, Quaternion.LookRotation(PlayerTr.position - SkeletonTr.position), Time.deltaTime * 8);
+                    monsterSword.enabled = true;
                     Ani.SetBool("IsAttack", true);
                     Ani.SetBool("IsTrace", false);
-                    yield return new WaitForSeconds(1.5f);
+                    yield return new WaitForSeconds(3f);
+                    monsterSword.enabled = false;
                     break;
                 default:
                     Ani.SetBool("IsTrace", false);
@@ -97,6 +101,7 @@ public class SkeleteonCtrl : MonoBehaviour {
             Ani.SetTrigger("IsHit");
             Hit(other.transform.position);
             MinusHp();
+            other.enabled = false;
         }
     }
 
@@ -124,8 +129,9 @@ public class SkeleteonCtrl : MonoBehaviour {
         Ani.SetTrigger("IsDie");
         thisCanvas.enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
-        StopAllCoroutines();
+        GameControl.gameControl.KillChk();//킬 체크
 
+        StopAllCoroutines();
         StartCoroutine(PushPool());
 
         

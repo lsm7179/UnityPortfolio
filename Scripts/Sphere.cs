@@ -43,7 +43,7 @@ public class Sphere : MonoBehaviour {
     void OnDestroy()
     {
         //체력 마나 회복되게끔
-        if (this.gameObject.name.Equals("MpSphere"))
+        if (this.gameObject.CompareTag("MpSphere"))
         {
             if (PlayerManager.Instance.mp <= 85)
             {
@@ -60,15 +60,15 @@ public class Sphere : MonoBehaviour {
             PlayerManager.Instance.mpBar.fillAmount = (float)PlayerManager.Instance.mp / (float)PlayerManager.Instance.mpInit;
             PlayerManager.Instance.mpText.text = PlayerManager.Instance.mp + " / " + PlayerManager.Instance.mpInit;
         }
-        else if (this.gameObject.name.Equals("HpSphere"))
+        else if (this.gameObject.CompareTag("HpSphere"))
         {
-            if (PlayerManager.Instance.hp <= 285)
+            if (PlayerManager.Instance.hp <= 485)
             {
                 PlayerManager.Instance.hp += 15;
             }
-            else if (PlayerManager.Instance.hp > 285&&PlayerManager.Instance.hp <= 300)
+            else if (PlayerManager.Instance.hp > 485&&PlayerManager.Instance.hp <= 300)
             {
-                PlayerManager.Instance.hp = 300;
+                PlayerManager.Instance.hp = 500;
             }
             else
             {

@@ -14,14 +14,26 @@ public class GameControl : MonoBehaviour {
 
 	private GameObject _player;
 	public static bool isSaveing= false;
-
+	public static GameControl gameControl;
+	public int killNum = 9;
+	[Header("챕터완료시 씬전환")]
+	public GameObject GameClearPanel;
+	public Text ClearText;
+	[SerializeField]
+	private float FadeTime = 1.2f; //Fade효과 재생시간
+	[SerializeField]
+	private float time;
+	[SerializeField]
+	private Image fadeImg;
 	void Awake () {
+		gameControl = this;
 		_player = GameObject.FindWithTag("Player").gameObject;
 		if (isSaveing)
 		{
 		_player.transform.position = new Vector3(PlayerPrefs.GetFloat("x"), PlayerPrefs.GetFloat("y"), PlayerPrefs.GetFloat("z"));
 		_player.transform.eulerAngles = new Vector3(0, PlayerPrefs.GetFloat("Cam_y"), 0);
 		}
+		fadeImg = GameClearPanel.GetComponent<Image>();
 	}
 	
 	void Update () {
@@ -41,6 +53,33 @@ public class GameControl : MonoBehaviour {
 		}
 	}
 
+	//킬 체크 후 챕터완료 화면으로 이동
+	public void KillChk()
+	{
+		killNum--;
+		if (killNum <= 0)
+		{
+			//완료 화면으로 이동
+			StartCoroutine(Clear());
+		}
+	}
+	IEnumerator Clear()
+	{
+
+		Color fadeColor = fadeImg.color;
+		time = 0f;
+		ClearText.text = "ChapterClear";
+		GameClearPanel.SetActive(true);
+		while (fadeColor.a < 1f)
+		{
+			time += Time.deltaTime / FadeTime;
+			fadeColor.a = Mathf.Lerp(0f, 1f, time);
+			fadeImg.color = fadeColor;
+			yield return null;
+		}
+		SceneManager.LoadScene("GameStart");
+		yield return null;
+	}
 	public void Pause()
 	{
 		if (!PauseImage.gameObject.activeInHierarchy)
