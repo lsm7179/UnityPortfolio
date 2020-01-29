@@ -26,6 +26,7 @@ public class GameControl : MonoBehaviour {
 	[SerializeField]
 	private Image fadeImg;
 	void Awake () {
+		Screen.SetResolution(1280, 800, true);
 		gameControl = this;
 		_player = GameObject.FindWithTag("Player").gameObject;
 		if (isSaveing)

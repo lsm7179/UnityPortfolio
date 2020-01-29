@@ -11,6 +11,7 @@ public class GMStartManager : MonoBehaviour {
 
     public void Awake()
     {
+        Screen.SetResolution(1280, 800, true);
         if (GameControl.isSaveing)
         {
          buttonText.text = "다시하기";
@@ -18,5 +19,17 @@ public class GMStartManager : MonoBehaviour {
          _player.transform.eulerAngles = new Vector3(0, PlayerPrefs.GetFloat("Cam_y"), 0);
         }
     }
+
+	void Update()
+	{
+		if (Application.platform == RuntimePlatform.Android)
+		{
+			if (Input.GetKeyDown(KeyCode.Escape))
+			{
+                Application.Quit();
+            }
+		}
+		
+	}
 
 }
