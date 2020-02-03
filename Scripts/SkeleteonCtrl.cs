@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 //모바일에 최적화 된 스크립트 소스 작성
 public class SkeleteonCtrl : MonoBehaviour {
@@ -12,7 +13,7 @@ public class SkeleteonCtrl : MonoBehaviour {
     [SerializeField]
     private Transform PlayerTr;
     public float MoveSpeed = 3.0f;
-    public float TraceDist = 7f;
+    public float TraceDist = 20f;
     private Animator Ani;
     [SerializeField]
     private Image hpBar;
@@ -29,7 +30,12 @@ public class SkeleteonCtrl : MonoBehaviour {
     public GameObject HpSphere = null;
     private GameObject DestroyEffect = null;
     public Collider monsterSword = null;
+    [SerializeField]
+    private NavMeshAgent Navi;
+    public float attackdist = 3.0f;
+    public float tracedist = 10f;
     void Awake () {
+        Navi = GetComponent<NavMeshAgent>();
         SkeletonTr = GetComponent<Transform>();
         PlayerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
         Ani = GetComponent<Animator>();
@@ -40,56 +46,77 @@ public class SkeleteonCtrl : MonoBehaviour {
         MpSphere = Resources.Load<GameObject>("Effect/MpSphere");
         HpSphere = Resources.Load<GameObject>("Effect/HpSphere");
         monsterSword.enabled = false;
+        Navi.destination = PlayerTr.position;
     }
 
-    void FixedUpdate()
-    {
-        Trace();//추적은 내비게이션 보다 fixedupdate를 사용하여 구현 했다.
-    }
 
     //해당 오브젝트가 active 상태일때 메소드가 실행 된다.***
     void OnEnable()
     {
         StartCoroutine(Action());
+        StartCoroutine(SkelStateCheck());
+        //StartCoroutine(PlayerView());
     }
 
-    //몬스터 액션 확인
-    IEnumerator Action()
+    //몬스터가 계속 바라보게 만들기
+    IEnumerator PlayerView()
+    {
+        while (!isDie)
+        {
+            if (thisState == SkelState.attack)
+            {
+                SkeletonTr.rotation = Quaternion.Slerp(SkeletonTr.rotation, Quaternion.LookRotation(PlayerTr.position - SkeletonTr.position), Time.deltaTime * 8);
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    IEnumerator SkelStateCheck()
     {
         while (!isDie)
         {
             yield return new WaitForSeconds(0.2f);
             float dist = Vector3.Distance(PlayerTr.position, SkeletonTr.position);
-            switch (thisState) {
-                case SkelState.trace:
-                    Ani.SetBool("IsAttack", false);
-                    Ani.SetBool("IsTrace", true);
-                    break;
-                case SkelState.attack:
-                    SkeletonTr.rotation = Quaternion.Slerp(SkeletonTr.rotation, Quaternion.LookRotation(PlayerTr.position - SkeletonTr.position), Time.deltaTime * 8);
-                    monsterSword.enabled = true;
-                    Ani.SetBool("IsAttack", true);
-                    Ani.SetBool("IsTrace", false);
-                    yield return new WaitForSeconds(3f);
-                    monsterSword.enabled = false;
-                    break;
-                default:
-                    Ani.SetBool("IsTrace", false);
-                    Ani.SetBool("IsAttack", false);
-                    break;
-            }
-            if (dist <= TraceDist && dist > 4.0f)
-            {
-                thisState = SkelState.trace;
-            }
-            else if (dist <= 4.0f)
+            if (dist <= attackdist)
             {
                 thisState = SkelState.attack;
+            }
+            else if (dist <= tracedist&&dist>attackdist)
+            {
+                thisState = SkelState.trace;
             }
             else
             {
                 thisState = SkelState.idle;
             }
+        }
+    }
+    //몬스터 액션 확인
+    IEnumerator Action()
+    {
+        while (!isDie)
+        {
+            
+            switch (thisState) {
+                case SkelState.trace:
+                    Navi.isStopped = false;
+                    Navi.destination = PlayerTr.position;
+                    Ani.SetBool("IsTrace", true);
+                    Ani.SetBool("IsAttack", false);
+                    break;
+                case SkelState.attack:
+                    monsterSword.enabled = true;
+                    Navi.isStopped = true;
+                    Ani.SetBool("IsTrace", false);
+                    Ani.SetBool("IsAttack", true);
+                    yield return new WaitForSeconds(1.8f);
+                    monsterSword.enabled = false;
+                    break;
+                case SkelState.idle:
+                    Navi.isStopped = true;
+                    Ani.SetBool("IsTrace", false);
+                    break;
+            }
+            yield return null;
         }
     }
 
@@ -130,7 +157,7 @@ public class SkeleteonCtrl : MonoBehaviour {
         thisCanvas.enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
         GameControl.gameControl.KillChk();//킬 체크
-
+        Navi.isStopped = true;
         StopAllCoroutines();
         StartCoroutine(PushPool());
 
@@ -172,13 +199,13 @@ public class SkeleteonCtrl : MonoBehaviour {
     /// <summary>
     /// 추적하는 함수
     /// </summary>
-    void Trace()
+    /*void Trace()
     {
-        if (thisState != SkelState.trace)//|| Ani.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+        if (thisState != SkelState.trace)
         {
             return;
         }
         SkeletonTr.rotation = Quaternion.Slerp(SkeletonTr.rotation, Quaternion.LookRotation(PlayerTr.position - SkeletonTr.position), Time.deltaTime * 8);
         SkeletonTr.Translate(Vector3.forward * MoveSpeed * Time.deltaTime);
-    }
+    }*/
 }

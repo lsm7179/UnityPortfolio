@@ -59,8 +59,11 @@ public class TouchPad : MonoBehaviour {
         //터치 단일변수 자동으로 배열에 담는다.
         if (Input.touchCount > 0)//한번이라도 터치했다면
         {
+            //Input.touches.
+            int index = 0;
             foreach (Touch touch in Input.touches)
             {
+                
                 i++;//touchid 번호를 1증가.
                 Vector3 TouchPos = new Vector3(touch.position.x, touch.position.y);
                 //터치 요형 터치를 막시작한 터치유형이라면
@@ -75,8 +78,13 @@ public class TouchPad : MonoBehaviour {
                         _toucld = i;
                     }
                 }
+                
+                if(Screen.height/2< touch.position.x)
+                {
+
+                }
                 //터치 유형이 움직이거나 멈춰있다면.
-                if(touch.phase == TouchPhase.Moved|| touch.phase == TouchPhase.Stationary)
+                if (touch.phase == TouchPhase.Moved|| touch.phase == TouchPhase.Stationary)
                 {
                     if (_toucld == i)
                     {
@@ -91,6 +99,7 @@ public class TouchPad : MonoBehaviour {
                         _toucld = -1;
                     }
                 }
+                index++;
             }
         }
     }

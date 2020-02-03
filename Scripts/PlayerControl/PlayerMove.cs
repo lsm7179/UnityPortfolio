@@ -21,6 +21,7 @@ public class PlayerMove : MonoBehaviour {
         //mainCamera = GameObject.Find("Camera").GetComponent<Camera>();
         mainCamera = GameObject.Find("Camera_Mouse").GetComponent<Camera>();
         targetPos = playTr.position;
+        StartCoroutine(WalkCheck());
     }
 		
 	void FixedUpdate () {
@@ -51,9 +52,7 @@ public class PlayerMove : MonoBehaviour {
                 //벡터값을 이용해서 회전
             }
         }
-        //playTr.Translate(Vector3.forward * v * moveSpeed * Time.deltaTime);
-        //playTr.Rotate(Vector3.up * h * rotSpeed * Time.deltaTime);
-        StartCoroutine(WalkCheck());
+        
     }
     
     //걷는 애니메이션 체크
@@ -62,7 +61,7 @@ public class PlayerMove : MonoBehaviour {
         while (true)
         {
             yield return new WaitForSeconds(0.2f);
-            if (v != 0f || h != 0f)//
+            if (v != 0f || h != 0f)
             {
                 PlayerAniCtrl.IsWalk = true;
             }
