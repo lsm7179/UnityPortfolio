@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TouchPad : MonoBehaviour {
 
@@ -23,7 +24,9 @@ public class TouchPad : MonoBehaviour {
         _startPos = _touchPad.position;//초기화
         _player = GameObject.FindWithTag("Player").GetComponent <PlayerMove>();
         //Hierarchy에 Player라는 Tag를 가진 Object 안에 PlayerMovement
-	}
+       
+
+    }
 	
     public void _ButtonDown()
     {
@@ -59,47 +62,43 @@ public class TouchPad : MonoBehaviour {
         //터치 단일변수 자동으로 배열에 담는다.
         if (Input.touchCount > 0)//한번이라도 터치했다면
         {
-            //Input.touches.
+            
             int index = 0;
             foreach (Touch touch in Input.touches)
             {
-                
-                i++;//touchid 번호를 1증가.
-                Vector3 TouchPos = new Vector3(touch.position.x, touch.position.y);
-                //터치 요형 터치를 막시작한 터치유형이라면
-                if (touch.phase == TouchPhase.Began)
+                if ((Screen.width / 2)>= touch.position.x)
                 {
-                    if (touch.position.x <= (_startPos.x + _dragRadius))
+                    i++;//touchid 번호를 1증가.
+                    Vector3 TouchPos = new Vector3(touch.position.x, touch.position.y);
+                    //터치 요형 터치를 막시작한 터치유형이라면
+                    if (touch.phase == TouchPhase.Began)
                     {
-                        _toucld = i;
+                        if (touch.position.x <= (_startPos.x + _dragRadius))
+                        {
+                            _toucld = i;
+                        }
+                        if (touch.position.y <= (_startPos.y + _dragRadius))
+                        {
+                            _toucld = i;
+                        }
                     }
-                    if (touch.position.y <= (_startPos.y + _dragRadius))
+                    //터치 유형이 움직이거나 멈춰있다면.
+                    if (touch.phase == TouchPhase.Moved|| touch.phase == TouchPhase.Stationary)
                     {
-                        _toucld = i;
+                        if (_toucld == i)
+                        {
+                            HandleInput(TouchPos);
+                        }
                     }
-                }
-                
-                if(Screen.height/2< touch.position.x)
-                {
-
-                }
-                //터치 유형이 움직이거나 멈춰있다면.
-                if (touch.phase == TouchPhase.Moved|| touch.phase == TouchPhase.Stationary)
-                {
-                    if (_toucld == i)
+                    if (touch.phase == TouchPhase.Ended)
                     {
-                        HandleInput(TouchPos);
+                        if (_toucld == i)
+                        {
+                            _toucld = -1;
+                        }
                     }
-                    
+                    index++;
                 }
-                if (touch.phase == TouchPhase.Ended)
-                {
-                    if (_toucld == i)
-                    {
-                        _toucld = -1;
-                    }
-                }
-                index++;
             }
         }
     }

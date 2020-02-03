@@ -74,7 +74,7 @@ public class PlayerManager : MonoBehaviour {
             hp -= 7;
             hpBar.fillAmount = (float)hp / (float)hpInit;
             hpText.text = hp + " / " + hpInit;
-            Ani.SetTrigger("IsHit");
+            //Ani.SetTrigger("IsHit");
         }
 
         if (other.name.Equals("Body"))
@@ -84,7 +84,7 @@ public class PlayerManager : MonoBehaviour {
             hp -= 3;
             hpBar.fillAmount = (float)hp / (float)hpInit;
             hpText.text = hp + " / " + hpInit;
-                Ani.SetTrigger("IsHit");
+                //Ani.SetTrigger("IsHit");
             }
         }
         if (hp <= 0)
@@ -138,7 +138,6 @@ public class PlayerManager : MonoBehaviour {
         StartCoroutine(WaitForAttack(0.16f));
         swordRenderer.enabled = true;
         swordCollider.enabled = true;
-        PlayerAniCtrl.IsWalk = false;
         PlayerAniCtrl.IsAttack = true;
         StartCoroutine(WaitForIt(0.8f));
 
