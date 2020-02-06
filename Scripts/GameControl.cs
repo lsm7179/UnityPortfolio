@@ -19,6 +19,7 @@ public class GameControl : MonoBehaviour {
 	[Header("챕터완료시 씬전환")]
 	public GameObject GameClearPanel;
 	public Text ClearText;
+	public Text MonsterKillText;
 	[SerializeField]
 	private float FadeTime = 1.2f; //Fade효과 재생시간
 	[SerializeField]
@@ -58,6 +59,7 @@ public class GameControl : MonoBehaviour {
 	public void KillChk()
 	{
 		killNum--;
+		MonsterKillText.text = "남은 몬스터 수 : " + killNum;
 		if (killNum <= 0)
 		{
 			//완료 화면으로 이동
@@ -93,13 +95,13 @@ public class GameControl : MonoBehaviour {
 			}
 			PauseImage.gameObject.SetActive(true);
 			Time.timeScale = 0f;
-			_player.SetActive(false);
+			//_player.SetActive(false);
 		}
 		else
 		{
 			PauseImage.gameObject.SetActive(false);
 			Time.timeScale = 1f;
-			_player.SetActive(true);
+			//_player.SetActive(true);
 		}
 	}
 

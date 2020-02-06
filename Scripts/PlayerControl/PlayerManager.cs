@@ -64,7 +64,8 @@ public class PlayerManager : MonoBehaviour {
         rbody = GetComponent<Rigidbody>();
         swordRenderer = swordCollider.gameObject.GetComponent<TrailRenderer>();
         swordCollider.enabled = false;
-
+        Destroy(gameObject.GetComponent<Transform>().GetChild(9).gameObject, 1.3f);
+        
     }
 
     void OnTriggerEnter(Collider other)

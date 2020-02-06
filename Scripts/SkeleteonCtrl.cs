@@ -127,7 +127,7 @@ public class SkeleteonCtrl : MonoBehaviour {
         {
             Ani.SetTrigger("IsHit");
             Hit(other.transform.position);
-            MinusHp();
+            if (Hp > 0) MinusHp();
             other.enabled = false;
         }
     }
